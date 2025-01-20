@@ -1,0 +1,18 @@
+{
+    "name": "@elizaos/plugin-tee-eliza-logger",
+    "version": "0.1.0",
+    "private": true,
+    "type": "module",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "dependencies": {
+        "@elizaos/core": "workspace:*",
+        "@elizaos/plugin-tee": "workspace:*",
+        "@elizaos/plugin-tee-log": "workspace:*"
+    },
+    "scripts": {
+        "build": "tsup --format esm --dts",
+        "dev": "tsup --format esm --dts --watch",
+        "lint": "eslint --fix  --cache ."
+    }
+}
