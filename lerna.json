@@ -5,6 +5,7 @@
         "docs",
         "agent",
         "client",
+        "log-client",
         "!packages/_examples"
     ],
     "npmClient": "pnpm"

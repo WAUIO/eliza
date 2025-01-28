@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        --terminal-bg: 0 0% 12%;
+        --terminal-text: 220 11% 71%;
+    }
+}
+
+@layer components {
+    .terminal-container {
+        @apply w-[90%] h-[90%] rounded-lg overflow-hidden shadow-lg bg-terminal-bg text-terminal-text;
+    }
+}
