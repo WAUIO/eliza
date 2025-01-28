@@ -9,8 +9,31 @@
             "request": "launch",
             "name": "Launch via pnpm",
             "runtimeExecutable": "pnpm",
-            "runtimeArgs": ["run", "dev"],
-            "skipFiles": ["<node_internals>/**"]
+            "runtimeArgs": [
+                "run",
+                "dev"
+            ],
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Debug Eliza",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/agent/src/index.ts",
+            "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/tsx",
+            "args": [
+                "--isRoot"
+            ],
+            "env": {
+                "DEBUG": "eliza:*",
+                "NODE_ENV": "development"
+            },
+            "sourceMaps": true
         }
     ]
 }
