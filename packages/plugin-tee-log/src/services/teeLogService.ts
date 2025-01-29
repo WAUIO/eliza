@@ -1,13 +1,14 @@
-import { IAgentRuntime, Service, ServiceType, ITeeLogService } from "@elizaos/core";
+import { IAgentRuntime, Service, ServiceType, ITeeLogService, elizaLogger } from "@elizaos/core";
 import { TEEMode } from "@elizaos/plugin-tee";
 import { SqliteTeeLogDAO } from "../adapters/sqliteDAO";
 import { TeeType, TeeLogDAO, TeeAgent, TeeLog, TeeLogQuery, PageQuery } from "../types";
 import { TeeLogManager } from "./teeLogManager";
 import Database from "better-sqlite3";
 import path from "path";
+import fs from 'fs';
 
 export class TeeLogService extends Service implements ITeeLogService {
-    private readonly dbPath = path.resolve("agent/data/tee_log.sqlite");
+    private readonly dbPath = path.resolve("./data/tee_log.sqlite");
 
     private initialized: boolean = false;
     private enableTeeLog: boolean = false;
@@ -29,6 +30,16 @@ export class TeeLogService extends Service implements ITeeLogService {
     async initialize(runtime: IAgentRuntime): Promise<void> {
         if (this.initialized) {
             return;
+        }
+
+        // Create directory if it doesn't exist
+        const dbDir = path.dirname(this.dbPath)
+        if (!fs.existsSync(dbDir)) {
+            try {
+                fs.mkdirSync(dbDir, { recursive: true });
+            } catch (error) {
+                throw new Error(`Failed to create database directory: ${error}`);
+            }
         }
 
         const enableValues = ["true", "1", "yes", "enable", "enabled", "on"];
