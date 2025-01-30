@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { TeeLog, /*TeeLogQuery*/ } from '@elizaos/plugin-tee-log';
+import { TeeLog } from '@elizaos/plugin-tee-log';
 
 export const useLogStream = () => {
     const [logs, setLogs] = useState<TeeLog[]>([]);

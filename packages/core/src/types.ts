@@ -1430,6 +1430,7 @@ export enum ServiceType {
     SLACK = "slack",
     IRYS = "irys",
     TEE_LOG = "tee_log",
+    TEE_LOG_ENHANCED = "tee_log_enhanced",
     GOPLUS_SECURITY = "goplus_security",
 }
 

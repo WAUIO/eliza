@@ -13,7 +13,10 @@ export const elizaLoggerProvider: Provider = {
         const originalMethods = {
             info: elizaLogger.info,
             error: elizaLogger.error,
-            warn: elizaLogger.warn
+            warn: elizaLogger.warn,
+            log: elizaLogger.log,
+            debug: elizaLogger.debug,
+            assert: elizaLogger.assert
         };
 
         // Create wrapped logger method

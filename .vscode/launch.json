@@ -27,13 +27,22 @@
             "program": "${workspaceFolder}/agent/src/index.ts",
             "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/tsx",
             "args": [
-                "--isRoot"
+                "--isRoot",
+                "${input:extraArgs}"
             ],
             "env": {
                 "DEBUG": "eliza:*",
                 "NODE_ENV": "development"
             },
             "sourceMaps": true
+        }
+    ],
+    "inputs": [
+        {
+            "id": "extraArgs",
+            "type": "promptString",
+            "description": "Enter additional command-line arguments",
+            "default": ""
         }
     ]
 }
