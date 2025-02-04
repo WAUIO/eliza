@@ -1,7 +1,5 @@
-import { Provider, elizaLogger, IAgentRuntime, ServiceType, ITeeLogService } from "@elizaos/core";
-
-type LogLevel = 'INFO' | 'ERROR' | 'WARN' | 'LOG' | 'DEBUG' | 'ASSERT';
-type LogMethod = keyof Pick<typeof elizaLogger, 'info' | 'error' | 'warn' | 'log' | 'debug' | 'assert'>;
+import { Provider, IAgentRuntime, ServiceType, ITeeLogService } from "@elizaos/core";
+import { LogEventManager, LogEvent, LogLevel } from "@elizaos/plugin-log-interceptor";
 
 export const elizaLoggerProvider: Provider = {
     get: async (runtime: IAgentRuntime): Promise<void> => {
@@ -9,37 +7,26 @@ export const elizaLoggerProvider: Provider = {
             .getService<ITeeLogService>(ServiceType.TEE_LOG)
             .getInstance();
 
-        // Store original methods
-        const originalMethods = {
-            info: elizaLogger.info,
-            error: elizaLogger.error,
-            warn: elizaLogger.warn,
-            log: elizaLogger.log,
-            debug: elizaLogger.debug,
-            assert: elizaLogger.assert
-        };
+        const eventManager = runtime
+            .getService<LogEventManager>(LogEventManager.serviceType)
+            .getInstance();
 
-        // Create wrapped logger method
-        const createLoggerMethod = (method: LogMethod, level: LogLevel) => {
-            return async (...args: any[]) => {
-                const [message, metadata = {}] = args;
+        const logLevels: LogLevel[] = ['info', 'error', 'warn', 'log', 'debug', 'assert'];
+
+        logLevels.forEach(level => {
+            eventManager.addEventListener(level, async (event: LogEvent) => {
                 await teeLogService.log(
-                    metadata.agentId || runtime.agentId,
-                    metadata.roomId || 'default',
-                    metadata.userId || 'system',
-                    level,
-                    typeof message === 'string' ? message : JSON.stringify(message)
+                    event.metadata?.agentId || runtime.agentId,
+                    event.metadata?.roomId || 'default',
+                    event.metadata?.userId || 'system',
+                    event.level.toUpperCase(),
+                    event.message
                 );
-                return originalMethods[method].apply(elizaLogger, args);
-            };
-        };
-
-        // Apply to all log levels
-        elizaLogger.info = createLoggerMethod('info', 'INFO');
-        elizaLogger.error = createLoggerMethod('error', 'ERROR');
-        elizaLogger.warn = createLoggerMethod('warn', 'WARN');
-        elizaLogger.log = createLoggerMethod('log', 'LOG');
-        elizaLogger.debug = createLoggerMethod('debug', 'DEBUG');
-        elizaLogger.assert = createLoggerMethod('assert', 'ASSERT');
+            }, 1000);
+        });
+        // Clean up on runtime shutdown
+        // runtime.onShutdown(() => {
+        //     removeListener();
+        // });
     }
 };

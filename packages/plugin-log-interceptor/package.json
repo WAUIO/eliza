@@ -1,5 +1,5 @@
 {
-    "name": "@elizaos/plugin-tee-eliza-logger",
+    "name": "@elizaos/plugin-log-interceptor",
     "version": "0.1.0",
     "type": "module",
     "main": "dist/index.js",
@@ -19,9 +19,6 @@
     ],
     "dependencies": {
         "@elizaos/core": "workspace:*",
-        "@elizaos/plugin-log-interceptor": "workspace:*",
-        "@elizaos/plugin-tee": "workspace:*",
-        "@elizaos/plugin-tee-log": "workspace:*",
         "tsup": "8.3.5"
     },
     "scripts": {
