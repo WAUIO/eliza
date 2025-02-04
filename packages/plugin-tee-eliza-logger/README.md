@@ -23,12 +23,7 @@ Add to character.json:
 
 ```json
 {
-    "plugins": ["@elizaos/plugin-tee-eliza-logger"],
-    "settings": {
-        "teeLog": {
-            "enabled": true
-        }
-    }
+    "plugins": ["@elizaos/plugin-tee-eliza-logger"]
 }
 ```
 

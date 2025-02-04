@@ -94,6 +94,7 @@
         "@elizaos/plugin-quai": "workspace:*",
         "@elizaos/plugin-log-interceptor": "workspace:*",
         "@elizaos/plugin-tee-eliza-logger": "workspace:*",
+        "@elizaos/plugin-log-stream": "workspace:*",
         "readline": "1.3.0",
         "ws": "8.18.0",
         "yargs": "17.7.2"
