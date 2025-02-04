@@ -35,7 +35,7 @@ export class WebSocketServer extends Service {
                 ws.on('close', () => this.clients.delete(ws));
             });
 
-            console.log(`WebSocket server listening on port ${port}`);
+            console.info(`WebSocket server listening on port ${port}`);
             this.initialized = true;
         } catch (error) {
             console.error('Failed to initialize WebSocket server:', error);

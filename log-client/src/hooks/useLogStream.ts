@@ -1,37 +1,65 @@
 import { useState, useEffect } from 'react';
-import { TeeLog } from '@elizaos/plugin-tee-log';
+import { LogEvent } from '@elizaos/plugin-log-interceptor';
 
-export const useLogStream = () => {
-    const [logs, setLogs] = useState<TeeLog[]>([]);
+export const useLogStream = (url = import.meta.env.VITE_WS_LOG_URL || 'ws://localhost:8080') => {
+    const [logs, setLogs] = useState<LogEvent[]>([]);
     const [error, setError] = useState<string | null>(null);
+    const [isConnected, setIsConnected] = useState(false);
 
     useEffect(() => {
-        const fetchLogs = async () => {
-            try {
-                const response = await fetch('http://localhost:3000/tee/logs', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        query: {},
-                        page: 1,
-                        pageSize: 50
-                    })
-                });
+        let ws: WebSocket;
+        let reconnectTimeout: NodeJS.Timeout;
 
-                const data = await response.json();
-                setLogs(data.logs.data);
-            } catch (err) {
-                setError(err instanceof Error ? err.message : 'Failed to fetch logs');
-            }
+        const connect = () => {
+            // Add timeout buffer for server initialization
+            setTimeout(() => {
+                ws = new WebSocket(url);
+
+                ws.onopen = () => {
+                    setIsConnected(true);
+                    setError(null);
+                };
+
+                ws.onmessage = (event) => {
+                    try {
+                        const data = JSON.parse(event.data);
+                        if (data.type === 'log') {
+                            setLogs(prev => [...prev, {
+                                level: data.data.level,
+                                message: data.data.message,
+                                metadata: data.data.metadata,
+                                timestamp: new Date(data.data.timestamp).getTime()
+                            }]);
+                        }
+                    } catch (err) {
+                        console.error('Failed to parse log message:', err);
+                    }
+                };
+
+                ws.onerror = () => {
+                    setError('WebSocket connection error');
+                    setIsConnected(false);
+                };
+
+                ws.onclose = () => {
+                    setIsConnected(false);
+                    // Attempt to reconnect after 5 seconds
+                    reconnectTimeout = setTimeout(connect, 5000);
+                };
+            }, 1000); // Wait 1 second before initial connection attempt
         };
 
-        fetchLogs();
-        const interval = setInterval(fetchLogs, 5000);
+        connect();
 
-        return () => clearInterval(interval);
-    }, []);
+        return () => {
+            if (ws) {
+                ws.close();
+            }
+            if (reconnectTimeout) {
+                clearTimeout(reconnectTimeout);
+            }
+        };
+    }, [url]);
 
-    return { logs, error };
+    return { logs, error, isConnected };
 };

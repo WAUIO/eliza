@@ -5,6 +5,7 @@
   "private": true,
   "dependencies": {
     "@elizaos/core": "workspace:*",
+    "@elizaos/plugin-log-interceptor": "workspace:*",
     "@elizaos/plugin-tee-log": "workspace:*",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

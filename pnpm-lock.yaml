@@ -598,6 +598,9 @@ importers:
       '@elizaos/core':
         specifier: workspace:*
         version: link:../packages/core
+      '@elizaos/plugin-log-interceptor':
+        specifier: workspace:*
+        version: link:../packages/plugin-log-interceptor
       '@elizaos/plugin-tee-log':
         specifier: workspace:*
         version: link:../packages/plugin-tee-log
