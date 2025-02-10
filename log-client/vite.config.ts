@@ -1,28 +1,40 @@
 import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react-swc";
-import viteCompression from "vite-plugin-compression";
+import { resolve } from 'path';
+import dts from 'vite-plugin-dts';
 
 // https://vite.dev/config/
 export default defineConfig({
-    plugins: [
-        react(),
-        viteCompression({
-            algorithm: "brotliCompress",
-            ext: ".br",
-            threshold: 1024,
-        }),
-    ],
-    clearScreen: false,
     build: {
-        outDir: "dist",
-        minify: true,
-        cssMinify: true,
-        sourcemap: false,
-        cssCodeSplit: true,
+        lib: {
+            entry: resolve(__dirname, 'src/components/LogTerminal.ts'),
+            name: 'LogTerminal',
+            fileName: (format) => `log-terminal.${format}.js`,
+            formats: ['es', 'umd']
+        },
+        rollupOptions: {
+            external: ['xterm', 'xterm-addon-fit'],
+            output: {
+                globals: {
+                    'xterm': 'Terminal',
+                    'xterm-addon-fit': 'FitAddon'
+                },
+                inlineDynamicImports: true,
+                assetFileNames: (assetInfo) => {
+                    if (assetInfo.name === 'style.css') return 'log-terminal.css';
+                    return assetInfo.name!;
+                }
+            }
+        }
     },
+    plugins: [
+        dts({
+            include: ['src/components/LogTerminal.ts'],
+            outDir: 'dist/types'
+        })
+    ],
     resolve: {
         alias: {
-            "@": "/src"
-        },
-    },
+            '@elizaos/plugin-log-interceptor': resolve(__dirname, 'node_modules/@elizaos/plugin-log-interceptor')
+        }
+    }
 });
