@@ -32,12 +32,14 @@ jobs:
         username: ${{ secrets.GCE_USER }}
         key: ${{ secrets.GCE_SSH_KEY }}
         script: |
-            pwd
-            echo $USER
-            source ~/.bashrc
-            cd /var/www/eliza
-            git pull origin wau/develop
-            pnpm install --frozen-lockfile --prod
-            pnpm build
-            pm2 reload ecosystem.config.js
-            pm2 save
+          source ~/.bashrc
+          echo "Node path: $(which node)"
+          echo "PM2 path: $(which pm2)"
+          echo "PM2 version: $(pm2 --version)"
+          export PATH="$HOME/.nvm/versions/node/v23.3.0/bin:$PATH"
+          cd /var/www/eliza
+          git pull origin wau/develop
+          pnpm install --frozen-lockfile --prod
+          pnpm build
+          pm2 reload ecosystem.config.js
+          pm2 save
