@@ -18,13 +18,13 @@ jobs:
         cache: 'pnpm'
 
     - name: Install dependencies
-      run:  pnpm install --lockfile-only --no-frozen-lockfile  & pnpm install
+      run:  pnpm install --frozen-lockfile
 
     - name: Build project
       run: pnpm build
 
     - name: Deploy to GCE
-      uses: appleboy/ssh-action@v1
+      uses: appleboy/ssh-action@v1.0.0
       with:
         host: ${{ secrets.GCE_HOST }}
         username: ${{ secrets.GCE_USER }}
