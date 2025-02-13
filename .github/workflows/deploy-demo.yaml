@@ -32,9 +32,12 @@ jobs:
         username: ${{ secrets.GCE_USER }}
         key: ${{ secrets.GCE_SSH_KEY }}
         script: |
-          cd /var/www/eliza
-          git pull origin wau/develop
-          pnpm install --frozen-lockfile --prod
-          pnpm build
-          pm2 reload ecosystem.config.js
-          pm2 save
+            pwd
+            echo $USER
+            source ~/.bashrc
+            cd /var/www/eliza
+            git pull origin wau/develop
+            pnpm install --frozen-lockfile --prod
+            pnpm build
+            pm2 reload ecosystem.config.js
+            pm2 save
