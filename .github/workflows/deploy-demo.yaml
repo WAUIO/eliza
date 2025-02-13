@@ -33,11 +33,14 @@ jobs:
         key: ${{ secrets.GCE_SSH_KEY }}
         script: |
           source ~/.bashrc
-          echo "Node path: $(which node)"
-          echo "PM2 path: $(which pm2)"
-          echo "PM2 version: $(pm2 --version)"
           export PATH="$HOME/.nvm/versions/node/v23.3.0/bin:$PATH"
           cd /var/www/eliza
+
+          # Clean disk space
+          sudo apt-get clean
+          pnpm store prune
+          rm -rf **/*/node_modules
+
           git pull origin wau/develop
           pnpm install --frozen-lockfile --prod
           pnpm build
