@@ -23,7 +23,7 @@ jobs:
       run: pnpm install --frozen-lockfile
 
     - name: Build project
-      run: pnpm build -y
+      run: pnpm build
 
     - name: Deploy to GCE
       uses: appleboy/ssh-action@v1.0.0
@@ -42,7 +42,4 @@ jobs:
           rm -rf **/*/node_modules
 
           git pull origin wau/develop
-          pnpm install --frozen-lockfile --prod
-          pnpm build -y
-          pm2 reload ecosystem.config.js
-          pm2 save
+          pnpm install --frozen-lockfile --prod && pnpm build && pm2 reload ecosystem.config.js && pm2 save
