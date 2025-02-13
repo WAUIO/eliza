@@ -1,0 +1,38 @@
+name: Deploy to GCE
+
+on:
+  push:
+    branches: [wau/develop]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '23.3.0'
+        cache: 'pnpm'
+
+    - name: Install dependencies
+      run:  pnpm install --lockfile-only --no-frozen-lockfile  & pnpm install
+
+    - name: Build project
+      run: pnpm build
+
+    - name: Deploy to GCE
+      uses: appleboy/ssh-action@v1
+      with:
+        host: ${{ secrets.GCE_HOST }}
+        username: ${{ secrets.GCE_USER }}
+        key: ${{ secrets.GCE_SSH_KEY }}
+        script: |
+          cd /var/www/eliza
+          git pull origin wau/develop
+          pnpm install --frozen-lockfile --prod
+          pnpm build
+          pm2 reload ecosystem.config.js
+          pm2 save
