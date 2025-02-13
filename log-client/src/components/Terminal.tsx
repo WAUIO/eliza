@@ -1,9 +1,15 @@
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Terminal as XTerm } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import { useLogStream } from '../hooks/useLogStream';
-import { LogEvent } from '@elizaos/plugin-log-interceptor';
+import type { LogEvent } from '@elizaos/plugin-log-interceptor';
 import 'xterm/css/xterm.css';
+
+interface TerminalProps {
+    wsUrl: string;
+    className?: string;
+    style?: React.CSSProperties;
+}
 
 // Function to format log level with color and icon
 const getLogFormatting = (level: string): { icon: string; color: string } => {
@@ -40,10 +46,10 @@ const displayLogEntry = (term: XTerm, log: LogEvent) => {
     term.writeln(''); // Add empty line for readability
 };
 
-export const Terminal = () => {
+export const Terminal: React.FC<TerminalProps> = ({ wsUrl, className = '', style = {} }) => {
     const terminalRef = useRef<HTMLDivElement>(null);
     const termRef = useRef<XTerm | null>(null);
-    const { logs, error, isConnected } = useLogStream();
+    const { logs, error, isConnected } = useLogStream(wsUrl);
     const lastLogRef = useRef<number>(0);
 
     useEffect(() => {
@@ -101,8 +107,10 @@ export const Terminal = () => {
     }, [logs]);
 
     return (
-        <div className="terminal-wrapper h-full">
-            <div ref={terminalRef} className="terminal-container font-mono select-none h-full" />
-        </div>
+        <div
+            ref={terminalRef}
+            className={`terminal-container font-mono select-none ${className}`}
+            style={{ width: '100%', height: '100%', ...style }}
+        />
     );
 };
