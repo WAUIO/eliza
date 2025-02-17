@@ -1,29 +1,18 @@
 name: Deploy to GCE
 
 on:
-  push:
+  workflow_run:
+    workflows: ["Build and Push"]
+    types: [completed]
     branches: [wau/develop]
 
 jobs:
   deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '23.3.0'
-
-    - name: Install pnpm
-      run: npm install -g pnpm@latest
-
-    - name: Install dependencies
-      run: pnpm install --frozen-lockfile
-
-    - name: Build project
-      run: pnpm build
 
     - name: Deploy to GCE
       uses: appleboy/ssh-action@v1.0.0
@@ -36,10 +25,12 @@ jobs:
           export PATH="$HOME/.nvm/versions/node/v23.3.0/bin:$PATH"
           cd /var/www/eliza
 
-          # Clean disk space
-          sudo apt-get clean
-          pnpm store prune
-          rm -rf **/*/node_modules
+          # copy scripts/deploy/deployment-demo.sh to /var/www/eliza/deployment-demo.sh
+          cp scripts/deploy/deployment-demo.sh /var/www/eliza/deployment-demo.sh
+          chmod +x /var/www/eliza/deployment-demo.sh
 
-          git pull origin wau/develop
-          pnpm install --frozen-lockfile --prod && pnpm build && pm2 reload ecosystem.config.js && pm2 save
+          # run the deployment script
+          ./deployment-demo.sh
+    env:
+        GH_USER: ${{ github.actor }}
+        GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
