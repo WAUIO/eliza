@@ -1,0 +1,32 @@
+
+services:
+  main:
+    image: ghcr.io/wauio/eliza-main:latest
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1.5G
+    volumes:
+      - /var/eliza/tweetcache:/app/packages/client-twitter/src/tweetcache
+      - /var/eliza/db:/app/db.sqlite
+    environment:
+      - NODE_ENV=production
+      - TEE_MODE=off
+
+  client:
+    image: ghcr.io/wauio/eliza-client:latest
+    ports:
+      - "80:80"
+    depends_on:
+      - main
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.47.2
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    ports:
+      - "8080:8080"

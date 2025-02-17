@@ -1,0 +1,61 @@
+name: Build and Push
+
+on:
+  push:
+    branches: [wau/develop, main]
+    paths:
+      - '**'
+      - '!.github/workflows/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '23.3.0'
+      - run: npm install -g pnpm@latest
+      - uses: actions/cache@v3
+        with:
+          path: |
+            **/node_modules
+            !**/node_modules/.cache
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+        env:
+          NODE_ENV: production
+      - uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts
+          path: |
+            **/dist
+            packages/**/lib
+            agent/build
+            node_modules
+
+  docker-images:
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        app: [main, client]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
+          path: .
+      - uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_TOKEN }}
+      - uses: docker/build-push-action@v4
+        with:
+          file: Dockerfile.${{ matrix.app }}
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}-${{ matrix.app }}:latest
+            ghcr.io/${{ github.repository }}-${{ matrix.app }}:${{ github.sha }}
