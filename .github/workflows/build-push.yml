@@ -23,17 +23,25 @@ jobs:
             !**/node_modules/.cache
           key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
       - run: pnpm install --frozen-lockfile
-      - run: pnpm build
+      - name: Build packages
+        run: pnpm build
         env:
           NODE_ENV: production
-      - uses: actions/upload-artifact@v4
+
+      - name: Create artifacts archive
+        run: |
+          mkdir -p .artifacts
+          tar --use-compress-program='pigz --fast' \
+            --exclude='node_modules/.cache' \
+            -cf .artifacts/build-artifacts.tar.gz \
+            dist/ packages/**/lib/ agent/build/ node_modules/
+
+      - name: Upload artifacts archive
+        uses: actions/upload-artifact@v4
         with:
           name: build-artifacts
-          path: |
-            **/dist
-            packages/**/lib
-            agent/build
-            node_modules
+          path: .artifacts/build-artifacts.tar.gz
+          retention-days: 1
 
   docker-images:
     needs: build
@@ -43,10 +51,19 @@ jobs:
         app: [main, client]
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+
+      - name: Download and extract artifacts
+        uses: actions/download-artifact@v4
         with:
           name: build-artifacts
-          path: .
+          path: .artifacts
+
+      - name: Extract artifacts
+        run: |
+          tar --use-compress-program='pigz -d' \
+            -xf .artifacts/build-artifacts.tar.gz \
+            -C $GITHUB_WORKSPACE
+
       - uses: docker/login-action@v2
         with:
           registry: ghcr.io
