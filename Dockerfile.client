@@ -1,0 +1,19 @@
+FROM node:23.3.0-slim
+
+WORKDIR /app
+
+# Copy pre-built artifacts from GitHub Actions
+COPY --chown=node:node . .
+
+# Install runtime deps only
+RUN apt-get update && \
+    apt-get install -y git python3 && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Use pre-built node_modules
+RUN chown -R node:node node_modules
+
+USER node
+
+CMD ["pnpm", "start:client"]
