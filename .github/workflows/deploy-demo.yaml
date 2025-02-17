@@ -25,6 +25,9 @@ jobs:
           export PATH="$HOME/.nvm/versions/node/v23.3.0/bin:$PATH"
           cd /var/www/eliza
 
+          # copy docker-compose.demo.yml to /var/www/eliza/docker-compose.demo.yml
+          cp docker-compose.demo.yml /var/www/eliza/docker-compose.demo.yml
+
           # copy scripts/deploy/deployment-demo.sh to /var/www/eliza/deployment-demo.sh
           cp scripts/deploy/deployment-demo.sh /var/www/eliza/deployment-demo.sh
           chmod +x /var/www/eliza/deployment-demo.sh
