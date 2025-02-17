@@ -34,7 +34,8 @@ jobs:
           tar --use-compress-program='pigz --fast' \
             --exclude='node_modules/.cache' \
             -cf .artifacts/build-artifacts.tar.gz \
-            **/dist/ packages/**/lib/ agent/build/ node_modules/
+            app/build/ **/dist/ packages/**/lib/  **/node_modules/ \
+            --ignore-failed-read
 
       - name: Upload artifacts archive
         uses: actions/upload-artifact@v4
