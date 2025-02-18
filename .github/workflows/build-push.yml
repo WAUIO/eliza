@@ -61,6 +61,8 @@ jobs:
 
       - name: Extract artifacts
         run: |
+          pwd
+          ls -la .artifacts
           tar --use-compress-program='pigz -d' \
             -xf .artifacts/build-artifacts.tar.gz \
             -C $GITHUB_WORKSPACE
