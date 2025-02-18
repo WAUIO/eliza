@@ -97,6 +97,7 @@ jobs:
         run: echo "OWNER_LC=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
       - uses: docker/build-push-action@v4
         with:
+          context: .
           file: Dockerfile.${{ matrix.app }}
           push: true
           tags: |
