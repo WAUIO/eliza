@@ -70,13 +70,15 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GHCR_TOKEN }}
+      - name: Set lowercase owner name
+        run: echo "OWNER_LC=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
       - uses: docker/build-push-action@v4
         with:
           file: Dockerfile.${{ matrix.app }}
           push: true
           tags: |
-            ghcr.io/${{ format(github.repository_owner) }}/eliza-${{ matrix.app }}:latest
-            ghcr.io/${{ format(github.repository_owner) }}/eliza-${{ matrix.app }}:${{ github.sha }}
+            ghcr.io/${{ env.OWNER_LC }}/eliza-${{ matrix.app }}:latest
+            ghcr.io/${{ env.OWNER_LC }}/eliza-${{ matrix.app }}:${{ github.sha }}
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
