@@ -16,7 +16,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Use pre-built node_modules if exists
-RUN if [ -d node_modules ]; then chown -R node:node node_modules; fi
+RUN if [ -d node_modules ]; then ls -la node_modules; fi
 
 USER node
 
