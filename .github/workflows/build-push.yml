@@ -21,6 +21,11 @@ jobs:
           path: |
             **/node_modules
             **/dist
+            node_modules/
+            packages/**/node_modules/
+            packages/**/dist/
+            !packages/**/node_modules/.cache
+            !node_modules/.cache
             !**/node_modules/.cache
           key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
       - run: pnpm install --frozen-lockfile
@@ -45,7 +50,7 @@ jobs:
           tar --use-compress-program='pigz --fast' \
             --exclude='node_modules/.cache' \
             -cf .artifacts/build-artifacts.tar.gz \
-            app/build/ **/dist/ packages/**/lib/  **/node_modules/ \
+            node_modules/ app/build/ **/dist/ packages/**/dist/ packages/**/node_modules/  **/node_modules/ \
             --ignore-failed-read
 
       - name: Upload artifacts archive
@@ -78,9 +83,10 @@ jobs:
           ls -la
           echo "ls -la .artifacts"
           ls -la .artifacts
-          echo "tar --use-compress-program='pigz -d' \
+          tar --use-compress-program='pigz -d' \
             -xf .artifacts/build-artifacts.tar.gz \
             -C .
+          echo "ls -la"
           ls -la
       - uses: docker/login-action@v2
         with:
