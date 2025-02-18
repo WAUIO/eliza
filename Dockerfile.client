@@ -7,7 +7,7 @@ COPY --chown=node:node . .
 
 RUN ls -la
 
-RUN ls -la packages/client
+RUN ls -la client/
 
 # Install runtime deps only
 RUN apt-get update && \
