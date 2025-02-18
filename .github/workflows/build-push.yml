@@ -20,7 +20,6 @@ jobs:
         with:
           path: |
             **/node_modules
-            **/dist
             !**/node_modules/.cache
           key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
       - run: pnpm install --frozen-lockfile
@@ -35,12 +34,7 @@ jobs:
           tar --use-compress-program='pigz --fast' \
             --exclude='node_modules/.cache' \
             -cf .artifacts/build-artifacts.tar.gz \
-            $GITHUB_WORKSPACE/node_modules \
-            $GITHUB_WORKSPACE/app/build \
-            $GITHUB_WORKSPACE/**/dist \
-            $GITHUB_WORKSPACE/packages/**/dist \
-            $GITHUB_WORKSPACE/packages/**/lib/ \
-            $GITHUB_WORKSPACE/packages/**/node_modules/ \
+            app/build/ **/dist/ packages/**/lib/  **/node_modules/ \
             --ignore-failed-read
 
       - name: Upload artifacts archive
@@ -57,44 +51,34 @@ jobs:
       matrix:
         app: [main, client]
     steps:
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '23.3.0'
-      - run: npm install -g pnpm@latest
-      - uses: actions/cache@v3
-        with:
-          path: |
-            **/node_modules
-            **/dist
-            !**/node_modules/.cache
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
-      - run: pnpm install --frozen-lockfile
-      - name: Build packages
-        run: pnpm build
-        env:
-          NODE_ENV: production
+      - uses: actions/checkout@v4
 
-      - name: Download artifacts archive
+      - name: Download and extract artifacts
         uses: actions/download-artifact@v4
         with:
           name: build-artifacts
-          path: .artifacts/build-artifacts.tar.gz
+          path: .artifacts
 
-          - uses: docker/login-action@v2
-          with:
-            registry: ghcr.io
-            username: ${{ github.actor }}
-            password: ${{ secrets.GHCR_TOKEN }}
-        - name: Set lowercase owner name
-          run: echo "OWNER_LC=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
-        - uses: docker/build-push-action@v4
-          with:
-            file: Dockerfile.${{ matrix.app }}
-            push: true
-            tags: |
-              ghcr.io/${{ env.OWNER_LC }}/eliza-${{ matrix.app }}:latest
-              ghcr.io/${{ env.OWNER_LC }}/eliza-${{ matrix.app }}:${{ github.sha }}
-
+      - name: Extract artifacts
+        run: |
+          tar --use-compress-program='pigz -d' \
+            -xf .artifacts/build-artifacts.tar.gz \
+            -C $GITHUB_WORKSPACE
+          ls -la $GITHUB_WORKSPACE
+      - uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_TOKEN }}
+      - name: Set lowercase owner name
+        run: echo "OWNER_LC=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+      - uses: docker/build-push-action@v4
+        with:
+          file: Dockerfile.${{ matrix.app }}
+          push: true
+          tags: |
+            ghcr.io/${{ env.OWNER_LC }}/eliza-${{ matrix.app }}:latest
+            ghcr.io/${{ env.OWNER_LC }}/eliza-${{ matrix.app }}:${{ github.sha }}
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
