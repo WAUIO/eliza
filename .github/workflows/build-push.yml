@@ -75,8 +75,8 @@ jobs:
           file: Dockerfile.${{ matrix.app }}
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/$(echo ${{ github.repository }} | cut -d'/' -f2 | tr '[:upper:]' '[:lower:]')-${{ matrix.app }}:latest
-            ghcr.io/${{ github.repository_owner }}/$(echo ${{ github.repository }} | cut -d'/' -f2 | tr '[:upper:]' '[:lower:]')-${{ matrix.app }}:${{ github.sha }}
+            ghcr.io/${{ format(github.repository_owner) }}/eliza-${{ matrix.app }}:latest
+            ghcr.io/${{ format(github.repository_owner) }}/eliza-${{ matrix.app }}:${{ github.sha }}
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
