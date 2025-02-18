@@ -107,3 +107,6 @@ jobs:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
+
+permissions:
+  actions: write  # Required to trigger workflow_run
