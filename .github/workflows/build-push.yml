@@ -61,9 +61,12 @@ jobs:
 
       - name: Extract artifacts
         run: |
+          mkdir -p $GITHUB_WORKSPACE
           tar --use-compress-program='pigz -d' \
             -xf .artifacts/build-artifacts.tar.gz \
-            -C $GITHUB_WORKSPACE
+            -C $GITHUB_WORKSPACE \
+            --strip-components=0  # Preserve directory structure
+          ls -la $GITHUB_WORKSPACE  # Verify extraction
 
       - uses: docker/login-action@v2
         with:
