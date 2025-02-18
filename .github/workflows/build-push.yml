@@ -20,7 +20,6 @@ jobs:
         with:
           path: |
             **/node_modules
-            **/dist
             !**/node_modules/.cache
           key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
       - run: pnpm install --frozen-lockfile
@@ -35,12 +34,7 @@ jobs:
           tar --use-compress-program='pigz --fast' \
             --exclude='node_modules/.cache' \
             -cf .artifacts/build-artifacts.tar.gz \
-            $GITHUB_WORKSPACE/node_modules \
-            $GITHUB_WORKSPACE/app/build \
-            $GITHUB_WORKSPACE/**/dist \
-            $GITHUB_WORKSPACE/packages/**/dist \
-            $GITHUB_WORKSPACE/packages/**/lib/ \
-            $GITHUB_WORKSPACE/packages/**/node_modules/ \
+            app/build/ **/dist/ packages/**/lib/  **/node_modules/ \
             --ignore-failed-read
 
       - name: Upload artifacts archive
@@ -67,13 +61,10 @@ jobs:
 
       - name: Extract artifacts
         run: |
-          mkdir -p $GITHUB_WORKSPACE
           tar --use-compress-program='pigz -d' \
             -xf .artifacts/build-artifacts.tar.gz \
-            -C $GITHUB_WORKSPACE \
-            --strip-components=0  # Preserve directory structure
-          ls -la $GITHUB_WORKSPACE  # Verify extraction
-
+            -C $GITHUB_WORKSPACE
+          ls -la $GITHUB_WORKSPACE
       - uses: docker/login-action@v2
         with:
           registry: ghcr.io
@@ -88,13 +79,6 @@ jobs:
           tags: |
             ghcr.io/${{ env.OWNER_LC }}/eliza-${{ matrix.app }}:latest
             ghcr.io/${{ env.OWNER_LC }}/eliza-${{ matrix.app }}:${{ github.sha }}
-
-      - uses: actions/cache@v3
-        with:
-          path: |
-            **/node_modules
-            **/dist
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
