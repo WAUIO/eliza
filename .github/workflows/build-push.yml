@@ -32,8 +32,10 @@ jobs:
           ls -la
           echo "pnpm build"
           pnpm build
+          echo "ls -la packages/"
           ls -la packages/
-          ls -la packages/client/
+          echo "ls -la packages/client-auto/"
+          ls -la packages/client-auto/
         env:
           NODE_ENV: development
 
