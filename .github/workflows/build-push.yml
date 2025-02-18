@@ -20,13 +20,22 @@ jobs:
         with:
           path: |
             **/node_modules
+            **/dist
             !**/node_modules/.cache
           key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
       - run: pnpm install --frozen-lockfile
       - name: Build packages
-        run: pnpm build
+        run: |
+          echo "pwd"
+          pwd
+          echo "ls -la"
+          ls -la
+          echo "pnpm build"
+          pnpm build
+          ls -la packages/
+          ls -la packages/client/
         env:
-          NODE_ENV: production
+          NODE_ENV: development
 
       - name: Create artifacts archive
         run: |
