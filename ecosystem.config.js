@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: 'eliza-agent',
-      cwd: '/var/www/eliza/agent',
+      cwd: '/var/www/eliza',
       script: 'pnpm',
       args: 'start',
       env: {
@@ -12,9 +12,9 @@ module.exports = {
     },
     {
       name: 'eliza-client',
-      cwd: '/var/www/eliza/client',
+      cwd: '/var/www/eliza',
       script: 'pnpm',
-      args: 'dev --host',
+      args: 'start',
       env: {
         NODE_ENV: 'production',
         VITE_AGENT_URL: 'http://localhost:3000'
