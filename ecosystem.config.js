@@ -14,7 +14,7 @@ module.exports = {
       name: 'eliza-client',
       cwd: '/var/www/eliza',
       script: 'pnpm',
-      args: 'start',
+      args: 'start:client',
       env: {
         NODE_ENV: 'production',
         VITE_AGENT_URL: 'http://localhost:3000'
