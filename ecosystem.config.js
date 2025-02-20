@@ -19,7 +19,7 @@ module.exports = {
       script: 'pnpm',
       args: 'start:client --port 5173',
       env: {
-        VITE_API_URL: process.env.VITE_API_URL || 'http://localhost:3001'
+        VITE_API_URL: 'https://api.evolucia.com'
       },
       autorestart: true,
       watch: false,
