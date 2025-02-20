@@ -19,8 +19,7 @@ module.exports = {
       script: 'pnpm',
       args: 'start:client --port 5173',
       env: {
-        NODE_ENV: 'production',
-        VITE_API_URL: process.env.VITE_API_URL || 'http://localhost:3000'
+        VITE_API_URL: process.env.VITE_API_URL || 'http://localhost:3001'
       },
       autorestart: true,
       watch: false,
