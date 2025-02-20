@@ -103,6 +103,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import yargs from "yargs";
 import {dominosPlugin} from "@elizaos/plugin-dominos";
+import cors from "cors";
 
 const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
 const __dirname = path.dirname(__filename); // get the name of the directory
@@ -981,6 +982,13 @@ async function startAgent(
 
         // report to console
         elizaLogger.debug(`Started ${character.name} as ${runtime.agentId}`);
+
+        // Add CORS configuration to the Express app
+        directClient.app.use(cors({
+            origin: process.env.CORS_ORIGINS?.split(',') || '*',
+            methods: ['GET', 'POST', 'PUT', 'DELETE'],
+            allowedHeaders: ['Content-Type', 'Authorization']
+        }));
 
         return runtime;
     } catch (error) {
