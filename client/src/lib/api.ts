@@ -1,10 +1,6 @@
 import type { UUID, Character } from "@elizaos/core";
 
-<<<<<<< HEAD
 const BASE_URL = import.meta.env.VITE_API_URL;
-=======
-const BASE_URL = `http://localhost:${import.meta.env.VITE_SERVER_PORT}`;
->>>>>>> wau/release/next
 
 const fetcher = async ({
     url,
@@ -22,9 +18,9 @@ const fetcher = async ({
         headers: headers
             ? headers
             : {
-                  Accept: "application/json",
-                  "Content-Type": "application/json",
-              },
+                Accept: "application/json",
+                "Content-Type": "application/json",
+            },
     };
 
     if (method === "POST") {
@@ -62,7 +58,7 @@ const fetcher = async ({
 
             throw new Error(errorMessage);
         }
-            
+
         return resp.json();
     });
 };
