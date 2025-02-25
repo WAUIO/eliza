@@ -19,6 +19,7 @@ jobs:
         key: ${{ secrets.GCE_SSH_KEY }}
         script: |
           source ~/.bashrc
+          export PATH="$PATH:/home/tmralala/.nvm/versions/node/v23.3.0/bin"
           cd /var/www/eliza
           git pull origin wau/develop
           pnpm clean
