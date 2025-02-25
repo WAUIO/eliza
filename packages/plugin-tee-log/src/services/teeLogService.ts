@@ -1,16 +1,16 @@
-import { IAgentRuntime, Service, ServiceType, ITeeLogService } from "@elizaos/core";
+import { type IAgentRuntime, Service, ServiceType, type ITeeLogService } from "@elizaos/core";
 import { TEEMode } from "@elizaos/plugin-tee";
 import { SqliteTeeLogDAO } from "../adapters/sqliteDAO";
-import { TeeType, TeeLogDAO, TeeAgent, TeeLog, TeeLogQuery, PageQuery } from "../types";
+import { TeeType, type TeeLogDAO, type TeeAgent, type TeeLog, type TeeLogQuery, type PageQuery } from "../types";
 import { TeeLogManager } from "./teeLogManager";
 import Database from "better-sqlite3";
 import path from "path";
 
 export class TeeLogService extends Service implements ITeeLogService {
-    private readonly dbPath = path.resolve("agent/data/tee_log.sqlite");
+    private dbPath: string;
 
-    private initialized: boolean = false;
-    private enableTeeLog: boolean = false;
+    private initialized = false;
+    private enableTeeLog = false;
     private teeType: TeeType;
     private teeMode: TEEMode = TEEMode.OFF; // Only used for plugin-tee with TDX dstack
 
@@ -61,6 +61,9 @@ export class TeeLogService extends Service implements ITeeLogService {
         } else {
             throw new Error("Invalid TEE configuration.");
         }
+
+        const dbPathSetting = runtime.getSetting("TEE_LOG_DB_PATH");
+        this.dbPath = dbPathSetting || path.resolve("data/tee_log.sqlite");
 
         const db = new Database(this.dbPath);
         this.teeLogDAO = new SqliteTeeLogDAO(db);
