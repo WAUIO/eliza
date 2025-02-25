@@ -4,7 +4,7 @@ module.exports = {
       name: 'eliza-agent',
       cwd: '/var/www/eliza',
       script: 'pnpm',
-      args: 'start',
+      args: 'start --characters="characters/evolucia.character.json"',
       env: {
         NODE_ENV: 'production',
         SERVER_PORT: 3000
@@ -19,7 +19,7 @@ module.exports = {
       script: 'pnpm',
       args: 'start:client --port 5173',
       env: {
-        VITE_API_URL: 'https://api.evolucia.com'
+        VITE_SERVER_BASE_URL: 'https://api.evolucia.com'
       },
       autorestart: true,
       watch: false,
