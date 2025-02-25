@@ -4,21 +4,26 @@ module.exports = {
       name: 'eliza-agent',
       cwd: '/var/www/eliza',
       script: 'pnpm',
-      args: 'start',
+      args: 'start --characters="characters/evolucia.character.json"',
       env: {
         NODE_ENV: 'production',
         SERVER_PORT: 3000
-      }
+      },
+      autorestart: true,
+      watch: false,
+      max_memory_restart: '3G',
     },
     {
       name: 'eliza-client',
       cwd: '/var/www/eliza',
       script: 'pnpm',
-      args: 'start:client',
+      args: 'start:client --port 5173',
       env: {
-        NODE_ENV: 'production',
-        VITE_AGENT_URL: 'http://localhost:3000'
-      }
+        VITE_SERVER_BASE_URL: 'https://api.evolucia.com'
+      },
+      autorestart: true,
+      watch: false,
+      max_memory_restart: '1G',
     }
   ]
 };
