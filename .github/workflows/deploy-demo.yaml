@@ -1,9 +1,7 @@
 name: Deploy to GCE
 
 on:
-  workflow_run:
-    workflows: ["Build and Push"]
-    types: [completed]
+  push:
     branches: [wau/develop]
 
 jobs:
@@ -22,18 +20,14 @@ jobs:
         key: ${{ secrets.GCE_SSH_KEY }}
         script: |
           source ~/.bashrc
-          export PATH="$HOME/.nvm/versions/node/v23.3.0/bin:$PATH"
           cd /var/www/eliza
+          git pull origin wau/development
+          pnpm clean
+          pnpm restore pnpm-lock.yaml
+          pnpm install
+          pnpm build
 
-          # copy docker-compose.demo.yml to /var/www/eliza/docker-compose.demo.yml
-          cp docker-compose.demo.yml /var/www/eliza/docker-compose.demo.yml
-
-          # copy scripts/deploy/deployment-demo.sh to /var/www/eliza/deployment-demo.sh
-          cp scripts/deploy/deployment-demo.sh /var/www/eliza/deployment-demo.sh
-          chmod +x /var/www/eliza/deployment-demo.sh
-
-          # run the deployment script
-          ./deployment-demo.sh
+          pm2 restart all
     env:
         GH_USER: ${{ github.actor }}
         GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
