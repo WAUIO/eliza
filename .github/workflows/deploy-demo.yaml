@@ -22,7 +22,7 @@ jobs:
           export PATH="$PATH:/home/tmralala/.nvm/versions/node/v23.3.0/bin"
           cd /var/www/eliza
           git pull origin wau/develop
-          pnpm clean && pnpm restore pnpm-lock.yaml && pnpm install && pnpm build
+          pnpm clean && git restore pnpm-lock.yaml && pnpm install && pnpm build
 
           pm2 restart all
     env:
