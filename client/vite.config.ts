@@ -8,6 +8,13 @@ export default defineConfig(({ mode }) => {
     const envDir = path.resolve(__dirname, "..");
     const env = loadEnv(mode, envDir, "");
     return {
+        server: {
+            allowedHosts: [
+                'chat.evolucia.com',
+                'localhost',
+                '127.0.0.1'
+            ]
+        },
         plugins: [
             react(),
             viteCompression({
