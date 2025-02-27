@@ -24,7 +24,8 @@ jobs:
           git pull origin wau/develop
           pnpm clean && git restore pnpm-lock.yaml && pnpm install && pnpm build
 
-          pm2 restart all
+          pm2 reload ecosystem.config.js
+          pm2 save
     env:
         GH_USER: ${{ github.actor }}
         GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
