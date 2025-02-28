@@ -1,4 +1,4 @@
-# 📘 Eliza Server Maintenance Guide
+# 📘 Evolucia Server Maintenance Guide
 
 ## 1. System Requirements
 
