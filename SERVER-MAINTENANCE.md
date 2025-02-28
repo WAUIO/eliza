@@ -14,6 +14,8 @@
 
 ### PM2 Process Control
 ```bash
+sudo su tmralala
+
 # View all processes
 pm2 list
 
