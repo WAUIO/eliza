@@ -54,7 +54,7 @@ plugins
     try {
       const gitVersion = execSync('git --version', { stdio: 'pipe' }).toString().trim();
       console.log('using', gitVersion)
-    } catch(e) {
+    } catch (e) {
       console.error('Please install git to use this utility')
       return
     }

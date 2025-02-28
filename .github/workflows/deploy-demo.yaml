@@ -1,0 +1,31 @@
+name: Deploy to GCE
+
+on:
+  push:
+    branches: [wau/develop]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Deploy to GCE
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.GCE_HOST }}
+        username: ${{ secrets.GCE_USER }}
+        key: ${{ secrets.GCE_SSH_KEY }}
+        script: |
+          source ~/.bashrc
+          export PATH="$PATH:/home/tmralala/.nvm/versions/node/v23.3.0/bin"
+          cd /var/www/eliza
+          git pull origin wau/develop
+          pnpm clean && git restore pnpm-lock.yaml && pnpm install && pnpm build
+
+          pm2 reload ecosystem.config.js
+          pm2 save
+    env:
+        GH_USER: ${{ github.actor }}
+        GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
