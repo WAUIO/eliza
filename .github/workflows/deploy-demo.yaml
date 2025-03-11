@@ -22,6 +22,7 @@ jobs:
           export PATH="$PATH:/home/tmralala/.nvm/versions/node/v23.3.0/bin"
           cd /var/www/eliza
           git pull origin wau/develop
+          sudo chmod +x ./scripts/demo/launch.sh
           
           ./scripts/demo/launch.sh
     env:
