@@ -1,7 +1,5 @@
 #!/bin/bash
 
-git pull origin wau/develop
-
 cd packages/client-telegram
 git pull origin wau/main
 
