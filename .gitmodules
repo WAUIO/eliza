@@ -1,3 +1,6 @@
 [submodule "characters"]
 	path = characters
 	url = https://github.com/elizaos/characters
+[submodule "packages/client-telegram"]
+	path = packages/client-telegram
+	url = git@github.com:WAUIO/eliza-client-telegram.git
