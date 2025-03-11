@@ -20,7 +20,7 @@
     "dependencies": {
         "@elizaos/client-direct": "workspace:*",
         "@elizaos/core": "workspace:*",
-        "@elizaos/client-telegram": "github:elizaos-plugins/client-telegram",
+        "@elizaos/client-telegram": "workspace:*",
         "@elizaos/plugin-image": "github:elizaos-plugins/plugin-image",
         "@elizaos/client-twitter": "github:elizaos-plugins/client-twitter",
         "@elizaos/plugin-twitter": "github:elizaos-plugins/plugin-twitter",

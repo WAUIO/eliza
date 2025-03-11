@@ -21,11 +21,8 @@ jobs:
           source ~/.bashrc
           export PATH="$PATH:/home/tmralala/.nvm/versions/node/v23.3.0/bin"
           cd /var/www/eliza
-          git pull origin wau/develop
-          pnpm clean && git restore pnpm-lock.yaml && pnpm install && pnpm build
-
-          pm2 reload ecosystem.config.js
-          pm2 save
+          
+          ./scripts/demo/launch.sh
     env:
         GH_USER: ${{ github.actor }}
         GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}

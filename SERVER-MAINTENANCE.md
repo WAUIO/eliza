@@ -70,6 +70,11 @@ nvm use v23.3.0
 cd /var/www/eliza
 git pull origin wau/develop
 
+cd packages/client-telegram
+git pull origin wau/main
+
+cd ../../
+
 # Install dependencies
 pnpm install --no-frozen-lockfile --lockfile-only
 pnpm install
